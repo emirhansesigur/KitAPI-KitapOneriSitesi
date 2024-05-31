@@ -1,50 +1,136 @@
 const request = require('postman-request')
 
 const pool = require("../../db.js");
-const query = require("./queries.js");
+const { addBookById, getBookByGoogleId } = require("./queries.js");
 
 
-// bununla tüm kitapları json olarak dündürürüz.
-// url'nin nasıl çalıştığına bakmak gerekiyor.
 
-const getAllBooksByName = (req, res) => {
+const changeBookStatus = (req, res) => {
+    console.log("sıkıntı yok",req.body)
 
-    const { searchedBookName } = req.body; //Name bilgisi body'den geliyor.
-    console.log(searchedBookName);
+    try {
+        const { bookId, status } = req.body;
 
-    //POSTMAN ile alttaki şekilde body'den isim değerini gönderiyoruz.
-    //  {
-    //     "searchedBookName": "Harry Potter"
-    // } 
+        if(status == 4){
+            pool.query("DELETE FROM kitap_listelerim WHERE kitap_google_id = $1 AND kullanici_id = $2",[bookId,req.session.userId]);
+        }
 
-    // express de kullanabiliriz. şimdilik böyle durabilir.
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${searchedBookName}&key=AIzaSyCBPWsVkUF1AxRpuh1oCIZsAZ95reiGGG8`;
-    request({ url: url, json: true }, (error, response) => {
+        pool.query("UPDATE kitap_listelerim SET kitap_durum = $1 WHERE kitap_google_id = $2 AND kullanici_id = $3", [status, bookId, req.session.userId])
+        
+        res.status(200).send({ success: true, status});
+    } catch (error) {
+        console.log("sıkıntı yok2",req.body)
+        res.status(500).send({ success: false, error: "Kitap durumu güncellenirken bir hata oluştu" });
+    }
+};
+
+const getBookById = (req, res, next) => {
+    const bookGoogleId = req.query.id;
+    
+    const url = `https://www.googleapis.com/books/v1/volumes/${bookGoogleId}`;
+
+    request({ url: url, json: true }, (error, response, body) => {
         if (error) {
-            console.log(error);
-        } else if (response.body.totalItems == 0) {
+            console.error(error);
+            res.status(500).send('İstek sırasında bir hata oluştu');
+        } else if (body.totalItems == 0) {
             console.log("Girilen kitap bilgisi bulunamadı.");
+            res.status(404).send('Girilen kitap bilgisi bulunamadı');
         } else {
-            console.log(response.body.totalItems);
+            const theBook = body ? body : "";
+
+            if(theBook !== ""){
+                req.bookTitle = theBook.volumeInfo.title;
+                req.author = theBook.volumeInfo.authors[0];
+                req.publisher = theBook.volumeInfo.publisher;
+                req.bookDesc = theBook.volumeInfo.description;
+                req.imgURL = theBook.volumeInfo.imageLinks.thumbnail;
+                req.categories = theBook.volumeInfo.categories;
+                req.publishedDate = theBook.volumeInfo.publishedDate;
+                req.pageCount = theBook.volumeInfo.pageCount;
+                req.language = theBook.volumeInfo.language;
+
+       
+                next();
+            }
+            else{
+                return res.status(404).send({"msg": "kitap bulunamadi"});
+            }
         }
     });
 };
 
 
-// ÖNEMLİ NOT: Bu yaptığımız işlemleri yazarlar için de yapmamiz gerekiyor.
-// ÖNEMLİ NOT 2: Kullanıcılar kitapları yıldızlayabilecekler mi?
-//    // if yes: one göre sorgu yapmamız gerekiyor. 
+// const getNumberOfBooksByName = (req, res) => { // paging yaparak bi sayfada 10, 20 kitap göstereceğiz.
 
-// bir sayfada her zaman 10 tane kitap olacaksa bunu 10 tane getirecek şekilde yapacağız.
-//yani tüm kitapları getirmeyeceğiz API den
-const getNumberOfBooksByName = (req, res) => { // paging yaparak bi sayfada 10, 20 kitap göstereceğiz.
+//     const { searchedBookName } = req.body; //Name bilgisi body'den geliyor.
+//     console.log(searchedBookName);
 
-    const { searchedBookName } = req.body; //Name bilgisi body'den geliyor.
-    console.log(searchedBookName);
+// };
 
+const addToReadingList = (req, res) => {
+
+    const { id } = req.body; // KİTABIN unique id sini çeker.
+    const userId = req.session.userId;
+    console.log(req.body);
+
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
+
+    const tarih = `${year}-${month}-${day}`;
+
+    pool.query(getBookByGoogleId, [id, userId], (error, results) => {
+        if (error) throw error;
+        const kitapVar = results.rows.length;
+        if (kitapVar) {
+            return res.status(200).send({ success: false });
+        }
+        let thumbnaiL;
+        if("imageLinks" in req.body.volumeInfo){ //  bazi kitaplarda resim olmadiginda ekiyordu ama imageLinksi olmayan kitaplar bulduk
+            // onun icin duzenleme yapildi - ibrahimburak
+            thumbnaiL = req.body.volumeInfo.imageLinks.thumbnail;
+            console.log(thumbnaiL);
+        }
+        else{
+            thumbnaiL = "";
+            console.log(thumbnaiL)
+        }
+        pool.query(addBookById, [id, userId, 1, tarih, req.body.volumeInfo.title, req.body.volumeInfo.authors[0],thumbnaiL], (error,
+            results) => {
+            if (error) {
+                return res.status(200).send({ success: false });
+            };
+            return res.status(200).send({ success: true });
+        })
+    })
+}
+
+
+const searchTheBook = (req, res) => {
+
+    const { bookSearch } = req.body;
+    console.log("bookSearch: " + bookSearch); // aranacak kitabın ismini yazar.
+
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${bookSearch}&key=${process.env.BOOK_API_KEY}`;
+
+    request({ url: url, json: true }, (error, response, body) => {
+        if (error) {
+            console.error(error);
+            res.status(500).send('İstek sırasında bir hata oluştu');
+        } else if (body.totalItems == 0) {
+            console.log("Girilen kitap bilgisi bulunamadı.");
+            res.status(404).send('Girilen kitap bilgisi bulunamadı');
+        } else {
+            // EJS view engine'i kullanarak kitapara.ejs sayfasını render et
+            const books = body.items ? body.items : "";
+            res.render('kitapAra', {books: books, username: req.session.username});
+        }
+    });
 };
 
-// kitaba tıklanınca getirilecek bilgiler
+// listlerim kısmındaki kitap islemlerini burada halledeceğim.
 const getOneBooksContentById = (req, res) => {
 
 }
@@ -59,10 +145,7 @@ const removeFromReadingList = (req, res) => {
 
 }
 
-const addToReadingList = (req, res) => {
 
-
-}
 
 const editBookInReadingList = (req, res) => {
 
@@ -77,4 +160,4 @@ const changeBooksCategoryInReadingList = (req, res) => {
 
 
 
-module.exports = { getAllBooksByName, getOneBooksContentById };
+module.exports = {addToReadingList, searchTheBook, getBookById, changeBookStatus };

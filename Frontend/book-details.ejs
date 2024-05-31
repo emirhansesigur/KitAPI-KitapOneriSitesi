@@ -3,7 +3,26 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Kitap Adı - Yazar</title>
+  <title><%= title %></title>
+  <!-- Yeni eklenen veya düzenlenen CSS  -->
+       <style> .border.rounded {
+             display: flex;
+            justify-content: center; /* Yatayda ortalar */
+            align-items: center;     /* Dikeyde ortalar */
+            height: 100%;            /* Ebeveyn div'in yüksekliğini kapsar */
+            width: 100%;             /* Ebeveyn div'in genişliğini kapsar */
+            overflow: hidden;        /* Taşan içeriği gizler */
+        }
+
+        .border.rounded img {
+          width: 100%;             /* Resmi genişlik boyunca uzatır */
+          height: 100%;            /* Yükseklik oranını korur */
+          object-fit:cover;       /* Resmin kapsayıcıya tam oturmasını sağlar */
+          display: block;          /* Resmi blok seviyesinde gösterir */
+          
+      }
+      
+    </style>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta content="" name="keywords" />
   <meta content="" name="description" />
@@ -19,14 +38,14 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
   <!-- Libraries Stylesheet -->
-  <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
-  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+  <link href="/lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+  <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
   <!-- Customized Bootstrap Stylesheet -->
-  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- Template Stylesheet -->
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="/css/style.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -37,9 +56,7 @@
   </div>
   <!-- Spinner End -->
   <!-- Header -->
-  <%- include('partials/header') %>
-
-
+  <%- include('partials/header', { activePage: '#' }) %>
     <!-- Modal Search Start -->
     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-fullscreen">
@@ -62,7 +79,9 @@
     <!-- Modal Search End -->
 
     <!-- Single Page Header start -->
-    <div class="container-fluid page-header py-5"></div>
+    <div class="container-fluid page-header py-5">
+      <h1 class="text-center text-white display-6">Arama -> <%= title %></h1>
+  </div>
     <!-- Single Page Header End -->
 
     <!-- Single Product Start -->
@@ -72,16 +91,16 @@
           <div class="col-lg-8 col-xl-9">
             <div class="row g-4">
               <div class="col-lg-6">
-                <div class="border rounded">
+                <div class="border rounded border.rounded">
                   <a href="#">
-                    <img src="img/martin-eden.jpg" class="img-fluid rounded" alt="Image" />
+                    <img src="<%= imgURL %>" class="img-fluid rounded" alt="Image" />
                   </a>
                 </div>
               </div>
               <div class="col-lg-6">
-                <h4 class="fw-bold mb-3">Martin Eden</h4>
-                <p class="mb-3">Jack London</p>
-                <h5 class="fw-bold mb-3">Türkiye İş Bankası Yayınları</h5>
+                <h4 class="fw-bold mb-3"><%= title %></h4>
+                <p class="mb-3"><%= author %></p>
+                <h6 class="fw-bold mb-3"><%= publisher %></h6>
                 <div class="d-flex mb-4">
                   <i class="fa fa-star text-secondary"></i>
                   <i class="fa fa-star text-secondary"></i>
@@ -89,29 +108,10 @@
                   <i class="fa fa-star text-secondary"></i>
                   <i class="fa fa-star"></i>
                 </div>
-                <p class="mb-4">
-                  Jack London’ın yarı otobiyografik romanı Martin Eden, 20.
-                  yüzyıl başında sosyal ve ideolojik meseleler ağırlıklı
-                  içeriğiyle Amerikan edebiyatında büyük ölçüde kabul görmüştür.
-                  London farklı sınıflar arasındaki zihniyet ve değer farklarını
-                  gözlerimizin önüne sererken, statü ve servetin Amerikan
-                  toplumundaki hayati önemine işaret eder. Romanın ana
-                  temalarından biri, başarı ve refah yolunun sosyal sınıf farkı
-                  gözetilmeksizin herkese açık olduğu şeklinde özetlenebilecek
-                  Amerikan Rüyası’dır. Ya da bu idealin yarattığı muazzam hayal
-                  kırıklığı…
-                </p>
-                <p class="mb-4">
-                  London, romanı bir sanatçının çıraklıktan olgunluğa geçiş
-                  sürecini işleyen Künstlerroman geleneğinde yazmıştır.
-                  Martin’in aşkı uğruna eğitimsiz genç bir işçiden başarılı ve
-                  rafine bir yazara dönüşüm mücadelesini anlatır. Kahramanı
-                  hedefine ulaştığında ise motivasyonunu ve heyecanını çoktan
-                  yitirmiş, trajik bir sona doğru sürüklenmektedir artık…
-                </p>
+                
 
                 <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i
-                    class="fa fa-shopping-bag me-2 text-primary"></i>
+                    class="me-2 text-primary"></i>
                   Listelerime Ekle</a>
               </div>
               <div class="col-lg-12">
@@ -122,159 +122,63 @@
                       aria-selected="true">
                       Açıklama
                     </button>
-                    <button class="nav-link border-white border-bottom-0" type="button" role="tab" id="nav-mission-tab"
-                      data-bs-toggle="tab" data-bs-target="#nav-mission" aria-controls="nav-mission"
-                      aria-selected="false">
-                      Yorumlar
-                    </button>
                   </div>
                 </nav>
                 <div class="tab-content mb-5">
                   <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                    <p>
-                      Jack London’ın yarı otobiyografik romanı Martin Eden, 20.
-                      yüzyıl başında sosyal ve ideolojik meseleler ağırlıklı
-                      içeriğiyle Amerikan edebiyatında büyük ölçüde kabul
-                      görmüştür. London farklı sınıflar arasındaki zihniyet ve
-                      değer farklarını gözlerimizin önüne sererken, statü ve
-                      servetin Amerikan toplumundaki hayati önemine işaret eder.
-                      Romanın ana temalarından biri, başarı ve refah yolunun
-                      sosyal sınıf farkı gözetilmeksizin herkese açık olduğu
-                      şeklinde özetlenebilecek Amerikan Rüyası’dır. Ya da bu
-                      idealin yarattığı muazzam hayal kırıklığı…
-                    </p>
-                    <p>
-                      London, romanı bir sanatçının çıraklıktan olgunluğa geçiş
-                      sürecini işleyen Künstlerroman geleneğinde yazmıştır.
-                      Martin’in aşkı uğruna eğitimsiz genç bir işçiden başarılı
-                      ve rafine bir yazara dönüşüm mücadelesini anlatır.
-                      Kahramanı hedefine ulaştığında ise motivasyonunu ve
-                      heyecanını çoktan yitirmiş, trajik bir sona doğru
-                      sürüklenmektedir artık…
+                    <p class="mb-4">
+                      <%- description %>
                     </p>
                     <div class="px-2">
-                      <div class="row g-4">
+                      <div class="row g-4 ">
                         <div class="col-6">
                           <div class="row bg-light align-items-center text-center justify-content-center py-2">
                             <div class="col-6">
-                              <p class="mb-0">Çevirmen</p>
+                              <h6 class="mb-0">Kategori:</h6>
                             </div>
                             <div class="col-6">
-                              <p class="mb-0">Levent Cinemre</p>
-                            </div>
-                          </div>
-                          <div class="row text-center align-items-center justify-content-center py-2">
-                            <div class="col-6">
-                              <p class="mb-0">Yılı</p>
-                            </div>
-                            <div class="col-6">
-                              <p class="mb-0">2014</p>
-                            </div>
-                          </div>
-                          <div class="row bg-light text-center align-items-center justify-content-center py-2">
-                            <div class="col-6">
-                              <p class="mb-0">ISBN</p>
-                            </div>
-                            <div class="col-6">
-                              <p class="mb-0">9786053322122</p>
+                              <p class="mb-0">
+                                <%- categories%>
+                              </p>
                             </div>
                           </div>
                           <div class="row text-center align-items-center justify-content-center py-2">
                             <div class="col-6">
-                              <p class="mb-0">Genişlik</p>
+                              <h6 class="mb-0">Basım Yılı:</h6>
                             </div>
                             <div class="col-6">
-                              <p class="mb-0">12,5</p>
+                              <p class="mb-0"><%- publishedDate%></p>
                             </div>
                           </div>
                           <div class="row bg-light text-center align-items-center justify-content-center py-2">
                             <div class="col-6">
-                              <p class="mb-0">Yükseklik</p>
+                              <h6 class="mb-0">ISBN:</h6>
                             </div>
                             <div class="col-6">
-                              <p class="mb-0">20,5</p>
+                              <p class="mb-0">9789750806452</p>
                             </div>
                           </div>
                           <div class="row text-center align-items-center justify-content-center py-2">
                             <div class="col-6">
-                              <p class="mb-0">Sayfa Sayısı</p>
+                              <h6 class="mb-0">Sayfa Sayısı:</h6>
                             </div>
                             <div class="col-6">
-                              <p class="mb-0">528</p>
+                              <p class="mb-0"><%- pageCount%></p>
                             </div>
                           </div>
                           <div class="row bg-light text-center align-items-center justify-content-center py-2">
                             <div class="col-6">
-                              <p class="mb-0">Dil</p>
+                              <h6 class="mb-0">Dil:</h6>
                             </div>
                             <div class="col-6">
-                              <p class="mb-0">Türkçe</p>
+                              <p class="mb-0"><%- language%></p>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
-                    <div class="d-flex">
-                      <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px"
-                        alt="" />
-                      <div class="">
-                        <p class="mb-2" style="font-size: 14px">
-                          March 24, 2024
-                        </p>
-                        <div class="d-flex justify-content-between">
-                          <h5>kitap_severr</h5>
-                          <div class="d-flex mb-3">
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star"></i>
-                          </div>
-                        </div>
-                        <p>
-                          Hayatımda okuduğum ve en çok etkilendiğim ilk 3
-                          kitabın arasında yerini aldı. Kitabı elinizden
-                          bırakmadan okuyorsunuz. Zaten Jack London'un
-                          yazarlığını bilen bilir. Olağan üstü bir eser olmuş.
-                        </p>
-                      </div>
-                    </div>
-                    <div class="d-flex">
-                      <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px"
-                        alt="" />
-                      <div class="">
-                        <p class="mb-2" style="font-size: 14px">
-                          July 10, 2023
-                        </p>
-                        <div class="d-flex justify-content-between">
-                          <h5>bheabde</h5>
-                          <div class="d-flex mb-3">
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star text-secondary"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                          </div>
-                        </div>
-                        <p class="text-dark">
-                          Bu yaz okuduğum en güzel kitaptı. Martin Eden günden
-                          güne mutsuz olurken ben onu daha çok sevdim.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="tab-pane" id="nav-vision" role="tabpanel">
-                    <p class="text-dark">
-                      Tempor erat elitr rebum at clita. Diam dolor diam ipsum et
-                      tempor sit. Aliqu diam amet diam et eos labore. 3
-                    </p>
-                    <p class="mb-0">
-                      Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam
-                      et eos labore. Clita erat ipsum et lorem et sit
-                    </p>
-                  </div>
+
                 </div>
               </div>
               <form action="#">
@@ -307,21 +211,9 @@
               </form>
             </div>
           </div>
-          <div class="col-lg-4 col-xl-3">
-            <div class="row g-4 fruite">
-              <div class="col-lg-12">
-                <div class="input-group w-100 mx-auto d-flex mb-4">
-                  <input type="search" class="form-control p-3" placeholder="Kitap adı girin"
-                    aria-describedby="search-icon-1" />
-                  <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                </div>
-
-              </div>
-            </div>
-
             <div class="col-lg-12">
               <div class="position-relative">
-                <img src="img/yazar-route.jpg" class="img-fluid w-100 rounded" alt="" />
+                <img ="img/yazar-route.jpg" class="img-fluid w-100 rounded" alt="" />
                 <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%)">
 
                 </div>
@@ -335,7 +227,7 @@
         <div class="owl-carousel vegetable-carousel justify-content-center">
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="" />
+              <img ="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -356,7 +248,7 @@
           </div>
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-1.jpg" class="img-fluid w-100 rounded-top" alt="" />
+              <img ="img/vegetable-item-1.jpg" class="img-fluid w-100 rounded-top" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -377,7 +269,7 @@
           </div>
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-3.png" class="img-fluid w-100 rounded-top bg-light" alt="" />
+              <img ="img/vegetable-item-3.png" class="img-fluid w-100 rounded-top bg-light" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -398,7 +290,7 @@
           </div>
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-4.jpg" class="img-fluid w-100 rounded-top" alt="" />
+              <img ="img/vegetable-item-4.jpg" class="img-fluid w-100 rounded-top" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -419,7 +311,7 @@
           </div>
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-5.jpg" class="img-fluid w-100 rounded-top" alt="" />
+              <img ="img/vegetable-item-5.jpg" class="img-fluid w-100 rounded-top" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -440,7 +332,7 @@
           </div>
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="" />
+              <img ="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -461,7 +353,7 @@
           </div>
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-5.jpg" class="img-fluid w-100 rounded-top" alt="" />
+              <img ="img/vegetable-item-5.jpg" class="img-fluid w-100 rounded-top" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -482,7 +374,7 @@
           </div>
           <div class="border border-primary rounded position-relative vesitable-item">
             <div class="vesitable-img">
-              <img src="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="" />
+              <img ="img/vegetable-item-6.jpg" class="img-fluid w-100 rounded-top" alt="" />
             </div>
             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px">
               Vegetable
@@ -513,13 +405,13 @@
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/lightbox/js/lightbox.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/waypoints/waypoints.min.js"></script>
+    <script src="/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 
 </html>

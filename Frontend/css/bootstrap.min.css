@@ -234,7 +234,7 @@ sup {
 }
 
 a {
-    color: #47176b;
+    color: #b0a39b;
     text-decoration: none
 }
 
@@ -340,7 +340,7 @@ label {
 }
 
 button {
-    border-radius: 0
+    border-radius: 1px
 }
 
 button:focus:not(:focus-visible) {
@@ -607,7 +607,7 @@ progress {
 
 .img-fluid {
     max-width: 100%;
-    height: auto
+    height: auto;
 }
 
 .img-thumbnail {
@@ -1424,7 +1424,8 @@ progress {
 
     .col-lg-6 {
         flex: 0 0 auto;
-        width: 50%
+        width: 50%;
+        
     }
 
     .col-lg-7 {
@@ -2884,7 +2885,7 @@ textarea.form-control-lg {
 }
 
 .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
-    margin-left: -1px;
+    margin-left: 0px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
 }
@@ -3139,8 +3140,8 @@ fieldset:disabled .btn {
 
 .btn-primary {
     color: #000;
-    background-color: #5033af;
-    border-color: #4c3273
+    background-color: #8679af;
+    border-color: #936dcb
 }
 
 .btn-primary:hover {
@@ -8147,7 +8148,7 @@ fieldset:disabled .btn {
 }
 
 .pt-5 {
-    padding-top: 3rem !important
+    padding-top: 1rem !important
 }
 
 .pe-0 {
@@ -8474,7 +8475,7 @@ fieldset:disabled .btn {
 }
 
 .rounded {
-    border-radius: 10px !important
+    border-radius: 0px !important
 }
 
 .rounded-0 {
@@ -8494,7 +8495,7 @@ fieldset:disabled .btn {
 }
 
 .rounded-circle {
-    border-radius: 50% !important
+    border-radius: 10% !important
 }
 
 .rounded-pill {

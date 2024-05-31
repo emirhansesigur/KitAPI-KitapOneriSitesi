@@ -1,10 +1,11 @@
 const { Router } = require('express');
-const controller = require("./controller")
-
+const { addToReadingList, searchTheBook, changeBookStatus } = require("./controller")
+const {getValue} = require('../users/controller');
 
 const router = Router();
 
-router.get('/', controller.getAllBooksByName);
+router.post('/addList', addToReadingList);
+router.post('/kitapAra',searchTheBook);
+router.post('/cart', getValue, changeBookStatus);
 
-
-module.exports = router;
+module.exports = router;    
